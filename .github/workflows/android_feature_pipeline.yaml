@@ -24,8 +24,7 @@ jobs:
 
       - name: Debug
         run: |
-          branch_name=${{ github.ref }}
-          branch_name=${branch_name#refs/heads/}
+          branch_name=$(basename ${{ github.ref }})
           echo "Branch Name: $branch_name"
 
       # - name: Check linting
