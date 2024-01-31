@@ -3,7 +3,6 @@ name: Android Feature Pipeline
 on:
   pull_request:
     branches: ["feature"]
-    # branches-ignore: ["documentation/*"]
     types: ["opened", "reopened", "synchronize"]
 
 jobs:
