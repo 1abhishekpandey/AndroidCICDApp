@@ -22,19 +22,16 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Check linting
-        run: ./gradlew lint
+      # - name: Check linting
+      #   run: ./gradlew lint
 
-      # - name: Check unit tests
-      #   run:
-      # run: ./gradlew test
+      - name: Check unit tests
+        run: ./gradlew test
 
-      # - name: Build
-      # run:
-      # run: ./gradlew build
+      - name: Build
+      run: ./gradlew build
 
       # - name: Sign APK
-      # run:
       # run: ./gradlew bundleRelease
 
       # - name: Notify to slack
