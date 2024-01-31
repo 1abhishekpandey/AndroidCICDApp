@@ -23,7 +23,10 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Debug
-        run: echo "\${{ github.ref }}"
+        run: |
+          branch_name=${{ github.ref }}
+          branch_name=${branch_name#refs/heads/}
+          echo "Branch Name: $branch_name"
 
       # - name: Check linting
       #   run:
