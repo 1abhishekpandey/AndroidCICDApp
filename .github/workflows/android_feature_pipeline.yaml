@@ -1,9 +1,9 @@
 name: Android Feature Pipeline
 
 on:
-  push:
   pull_request:
     branches: ["feature"]
+    types: ["opened", "reopened", "synchronize"]
 
 jobs:
   pipeline:
