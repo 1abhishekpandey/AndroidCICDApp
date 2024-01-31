@@ -2,7 +2,6 @@ name: Android Feature Pipeline
 
 on:
   push:
-    branches: ["master"]
   pull_request:
     branches: ["feature"]
 
