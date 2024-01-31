@@ -9,7 +9,7 @@ jobs:
   pipeline:
     name: Android Feature Pipeline
     runs-on: macos-latest
-    if: (startsWith(github.ref, 'refs/heads/documentation') || startsWith(github.ref, 'refs/heads/tests') || startsWith(github.ref, 'refs/heads/infra')) == false # Skip documentation, tests and infra branches
+    if: (startsWith(github.ref, 'refs/heads/documentation/*') || startsWith(github.ref, 'refs/heads/tests') || startsWith(github.ref, 'refs/heads/infra')) == false # Skip documentation, tests and infra branches
 
     steps:
       - uses: actions/setup-java@v3
