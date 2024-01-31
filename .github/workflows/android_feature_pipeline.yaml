@@ -3,14 +3,15 @@ name: Android Feature Pipeline
 on:
   pull_request:
     branches: ["feature"]
-    branches-ignore: ["documentation/*"]
+    # branches-ignore: ["documentation/*"]
     types: ["opened", "reopened", "synchronize"]
 
 jobs:
   pipeline:
     name: Android Feature Pipeline
     runs-on: macos-latest
-    if: ${{ ! startsWith(github.ref, 'refs/heads/documentation') }} # == false
+    # if: startsWith(github.head_ref, 'documentation/') == false # Skip documentation branches
+    # if: ${{ ! startsWith(github.ref, 'refs/heads/documentation') }} # == false
     # if: ${{ ! startsWith(github.ref, 'refs/tags/') }}
     # if: (startsWith(github.ref, 'refs/heads/documentation/') || startsWith(github.ref, 'refs/heads/tests') || startsWith(github.ref, 'refs/heads/infra')) == false # Skip documentation, tests and infra branches
 
@@ -27,7 +28,7 @@ jobs:
         run: |
           branch_name=$(basename ${{ github.ref_name }})
           echo "Branch Name: $branch_name"
-          echo "Branch Name2: ${{ github.ref_name }}"
+          echo "Branch Name2: ${{ github.head_ref }}"
 
       # - name: Check linting
       #   run:
