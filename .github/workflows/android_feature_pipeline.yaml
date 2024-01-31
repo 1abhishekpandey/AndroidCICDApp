@@ -22,6 +22,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Debug
+        run: echo "\${{ github.ref }}"
+
       # - name: Check linting
       #   run:
       # run: ./gradlew lint
