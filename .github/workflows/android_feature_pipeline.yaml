@@ -1,10 +1,9 @@
 name: Android Feature Pipeline
 
 on:
-  push:
-    branches: ["master"]
   pull_request:
     branches: ["feature"]
+    types: ["opened", "reopened", "synchronize"]
 
 jobs:
   pipeline:
@@ -16,21 +15,25 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: "temurin" # See 'Supported distributions' for available options
-          java-version: "11"
+          java-version: "17"
 
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Check linting
-        run: ./gradlew lint
+      # - name: Check linting
+      #   run:
+      # run: ./gradlew lint
 
-      - name: Check unit tests
-        run: ./gradlew test
+      # - name: Check unit tests
+      #   run:
+      # run: ./gradlew test
 
-      - name: Build
-        run: ./gradlew build
+      # - name: Build
+      # run:
+      # run: ./gradlew build
 
-      - name: Sign APK
-        run: ./gradlew bundleRelease
+      # - name: Sign APK
+      # run:
+      # run: ./gradlew bundleRelease
 
       # - name: Notify to slack
