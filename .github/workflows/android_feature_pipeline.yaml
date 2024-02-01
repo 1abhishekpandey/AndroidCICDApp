@@ -62,14 +62,24 @@ jobs:
           name: app-release
           path: app/build/outputs/apk/release/app-release.apk
 
-      - name: Output artifact ID
-        run: echo 'Artifact ID is ${{ steps.artifact-upload-step.outputs.artifact-id }}'
+      - name: Output artifact URL
+        run: |
+          echo 'Artifact URL is ${{ steps.artifact-upload-step.outputs.artifact-url }}'
+
+      - name: Slack notification
+        if: ${{ always() }}
+        run: |
+          echo "Success"
+          echo "Artifact URL is ${{ steps.artifact-upload-step.outputs.artifact-url }}"
+          echo "Status is: ${{ job.status }}"
+          echo "Steps are: ${{ toJson(steps) }}"
 
       # - name: Send message to Slack channel
       #   id: slack
       #   uses: slackapi/slack-github-action@v1.24.0
       #   env:
       #     SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+      #     ARTIFACT_URL: ${{ steps.artifact-upload-step.outputs.artifact-url }}
       #     PROJECT_NAME: "Feature Pipeline"
       #   with:
       #     channel-id: ${{ secrets.SLACK_RELEASE_CHANNEL_ID }}
@@ -90,7 +100,39 @@ jobs:
       #             "type": "section",
       #             "text": {
       #               "type": "mrkdwn",
-      #               "text": "*Release: <${{ env.NPM_PACKAGE_URL }}|Released APK>*\n${{ env.DATE }}"
+      #               "text": "*Release: <${{ env.ARTIFACT_URL }}|Released APK>*\n${{ env.DATE }}"
+      #             }
+      #           }
+      #         ]
+      #       }
+
+      # - name: Send message to Slack channel if job fails
+      #   if: ${{ failure() }}
+      #   id: slack-fail
+      #   uses: slackapi/slack-github-action@v1.24.0
+      #   env:
+      #     SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+      #     PROJECT_NAME: "Feature Pipeline"
+      #   with:
+      #     channel-id: ${{ secrets.SLACK_RELEASE_CHANNEL_ID }}
+      #     payload: |
+      #       {
+      #         "blocks": [
+      #           {
+      #             "type": "header",
+      #             "text": {
+      #               "type": "plain_text",
+      #               "text": "Failed: ${{ env.PROJECT_NAME }}"
+      #             }
+      #           },
+      #           {
+      #             "type": "divider"
+      #           },
+      #           {
+      #             "type": "section",
+      #             "text": {
+      #               "type": "plain_text",
+      #               "text": "The feature pipeline failed. Please check the logs."
       #             }
       #           }
       #         ]
