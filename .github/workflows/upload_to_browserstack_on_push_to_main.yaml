@@ -1,12 +1,12 @@
-name: Android Main Pipeline
+name: Upload to Browserstack on push to main
 
 on:
   push:
-    branches: ["main"]
+    branches: ["zzz"] # change this to 'main'
 
 jobs:
   pipeline:
-    name: Android Main Pipeline
+    name: Upload to Browserstack
     runs-on: macos-latest
 
     steps:
