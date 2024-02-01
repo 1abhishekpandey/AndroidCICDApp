@@ -65,7 +65,7 @@ jobs:
 
       - name: Get artifact ID
         env:
-          OUTPUT1: ${{ pipeline.outputs.output1 }}
+          OUTPUT1: ${{ outputs.output1 }}
         run: echo "Artifact ID from previous job is $OUTPUT1"
 
       # - name: Send message to Slack channel
