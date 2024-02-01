@@ -43,7 +43,7 @@ jobs:
         run: |
           pwd
           echo "${{ secrets.UPLOAD }}" | base64 --decode > UPLOAD
-          echo "${{ secrets.KEYSTORE }}" > KEYSTORE
+          echo "${{ secrets.KEYSTORE }}" > keystore.properties
           echo "$( < UPLOAD)"
           ls -li
 
@@ -53,10 +53,13 @@ jobs:
       # - name: Check unit tests
       #   run: ./gradlew test
 
-      - name: Build
+      - name: Build and Sign
         run: ./gradlew build
 
-      - name: Sign APK
-        run: ./gradlew bundleRelease
+      # - name: Check the build
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: app-release
+      #     path: app/build/outputs/apk/release/app-release.apk
 
       # - name: Notify to slack
