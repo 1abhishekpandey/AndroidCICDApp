@@ -7,9 +7,9 @@ on:
 
 jobs:
   cancel_previous:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
-      - uses: styfle/cancel-workflow-action@0.11.0
+      - uses: styfle/cancel-workflow-action@0.12.1
         with:
           workflow_id: ${{ github.event.workflow.id }}
 
@@ -55,7 +55,7 @@ jobs:
       - name: Build and Sign
         run: ./gradlew build
 
-      - name: Check the build
+      - name: Upload the release apk as an artifact
         uses: actions/upload-artifact@v2
         with:
           name: app-release
