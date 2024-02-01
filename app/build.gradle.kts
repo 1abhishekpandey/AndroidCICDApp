@@ -30,25 +30,12 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-//    signingConfigs {
-//        create("release") {
-//            storeFile = file("my-release-key.jks")
-//            storePassword = "password"
-//            keyAlias = "my-alias"
-//            keyPassword = "password"
-//        }
-//    }
-
     signingConfigs {
         create("config") {
             keyAlias = keystoreProperties["keyAlias"] as String
-            println("keyAlias: $keyAlias")
             keyPassword = keystoreProperties["keyPassword"] as String
-            println("keyPassword: $keyPassword")
             storeFile = file(keystoreProperties["storeFile"] as String)
-            println("storeFile: $storeFile")
             storePassword = keystoreProperties["storePassword"] as String
-            println("storePassword: $storePassword")
         }
     }
 
