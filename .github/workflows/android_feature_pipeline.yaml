@@ -7,7 +7,7 @@ on:
 
 jobs:
   cancel_previous:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: styfle/cancel-workflow-action@0.12.1
         with:
