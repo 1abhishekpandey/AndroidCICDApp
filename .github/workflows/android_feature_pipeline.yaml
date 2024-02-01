@@ -39,12 +39,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-core-
 
-      - name: Add upload and keystore.properties files
-        run: |
-          pwd
-          echo "${{ secrets.UPLOAD }}" | base64 --decode > app/UPLOAD
-          echo "${{ secrets.KEYSTORE }}" > keystore.properties
-          ls -li
+      # - name: Add upload and keystore.properties files
+      #   run: |
+      #     pwd
+      #     echo "${{ secrets.UPLOAD }}" | base64 --decode > app/UPLOAD
+      #     echo "${{ secrets.KEYSTORE }}" > keystore.properties
+      #     ls -li
 
       - name: Check linting
         run: ./gradlew lint
