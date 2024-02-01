@@ -46,33 +46,33 @@ jobs:
           echo "${{ secrets.KEYSTORE }}" > keystore.properties
           ls -li
 
-      # - name: Check linting
-      #   run: ./gradlew lint
+      - name: Check linting
+        run: ./gradlew lint
 
-      # - name: Check unit tests
-      #   run: ./gradlew test
+      - name: Check unit tests
+        run: ./gradlew test
 
-      - name: Build and Sign
+      - name: Build #and Sign
         run: ./gradlew build
 
-      - name: Upload the release apk as an artifact
-        id: artifact-upload-step
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-release
-          path: app/build/outputs/apk/release/app-release.apk
+      # - name: Upload the release apk as an artifact
+      #   id: artifact-upload-step
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: app-release
+      #     path: app/build/outputs/apk/release/app-release.apk
 
-      - name: Output artifact URL
-        run: |
-          echo 'Artifact URL is ${{ steps.artifact-upload-step.outputs.artifact-url }}'
+      # - name: Output artifact URL
+      #   run: |
+      #     echo 'Artifact URL is ${{ steps.artifact-upload-step.outputs.artifact-url }}'
 
-      - name: Slack notification
-        if: ${{ always() }}
-        run: |
-          echo "Success"
-          echo "Artifact URL is ${{ steps.artifact-upload-step.outputs.artifact-url }}"
-          echo "Status is: ${{ job.status }}"
-          echo "Steps are: ${{ toJson(steps) }}"
+      # - name: Slack notification
+      #   if: ${{ always() }}
+      #   run: |
+      #     echo "Success"
+      #     echo "Artifact URL is ${{ steps.artifact-upload-step.outputs.artifact-url }}"
+      #     echo "Status is: ${{ job.status }}"
+      #     echo "Steps are: ${{ toJson(steps) }}"
 
       # - name: Send message to Slack channel
       #   id: slack
