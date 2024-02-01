@@ -63,7 +63,8 @@ jobs:
           name: app-release
           path: app/build/outputs/apk/release/app-release.apk
 
-      - env:
+      - name: Get artifact ID
+        env:
           OUTPUT1: ${{ pipeline.outputs.output1 }}
         run: echo "Artifact ID from previous job is $OUTPUT1"
 
