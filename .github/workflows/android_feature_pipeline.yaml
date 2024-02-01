@@ -46,11 +46,11 @@ jobs:
           echo "${{ secrets.KEYSTORE }}" > keystore.properties
           ls -li
 
-      # - name: Check linting
-      #   run: ./gradlew lint
+      - name: Check linting
+        run: ./gradlew lint
 
-      # - name: Check unit tests
-      #   run: ./gradlew test
+      - name: Check unit tests
+        run: ./gradlew test
 
       - name: Build and Sign
         run: ./gradlew build
