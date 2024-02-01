@@ -3,46 +3,137 @@ name: Android Feature Pipeline
 on:
   pull_request:
     branches: ["feature"]
-    branches-ignore: ["documentation/*"]
     types: ["opened", "reopened", "synchronize"]
 
 jobs:
+  cancel_previous:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: styfle/cancel-workflow-action@0.12.1
+        with:
+          workflow_id: ${{ github.event.workflow.id }}
+
   pipeline:
     name: Android Feature Pipeline
     runs-on: macos-latest
-    if: ${{ ! startsWith(github.ref, 'refs/heads/documentation') }} # == false
-    # if: ${{ ! startsWith(github.ref, 'refs/tags/') }}
-    # if: (startsWith(github.ref, 'refs/heads/documentation/') || startsWith(github.ref, 'refs/heads/tests') || startsWith(github.ref, 'refs/heads/infra')) == false # Skip documentation, tests and infra branches
+    if: (startsWith(github.head_ref, 'documentation/') || startsWith(github.head_ref, 'tests/') || startsWith(github.head_ref, 'infra/')) == false # Skip documentation, tests and infra branches
 
     steps:
-      - uses: actions/setup-java@v3
+      - uses: actions/setup-java@v4
         with:
           distribution: "temurin" # See 'Supported distributions' for available options
           java-version: "17"
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Debug
-        run: |
-          branch_name=$(basename ${{ github.ref_name }})
-          echo "Branch Name: $branch_name"
-          echo "Branch Name2: ${{ github.ref_name }}"
+      - name: cache gradle dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-core-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-core-
 
-      # - name: Check linting
-      #   run:
-      # run: ./gradlew lint
+      # - name: Add upload and keystore.properties files
+      #   run: |
+      #     pwd
+      #     echo "${{ secrets.UPLOAD }}" | base64 --decode > app/UPLOAD
+      #     echo "${{ secrets.KEYSTORE }}" > keystore.properties
+      #     ls -li
 
-      # - name: Check unit tests
-      #   run:
-      # run: ./gradlew test
+      - name: Check linting
+        run: ./gradlew lint
 
-      # - name: Build
-      # run:
-      # run: ./gradlew build
+      - name: Check unit tests
+        run: ./gradlew test
 
-      # - name: Sign APK
-      # run:
-      # run: ./gradlew bundleRelease
+      - name: Build #and Sign
+        run: ./gradlew build
 
-      # - name: Notify to slack
+      # - name: Upload the release apk as an artifact
+      #   id: artifact-upload-step
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: app-release
+      #     path: app/build/outputs/apk/release/app-release.apk
+
+      # - name: Output artifact URL
+      #   run: |
+      #     echo 'Artifact URL is ${{ steps.artifact-upload-step.outputs.artifact-url }}'
+
+      # - name: Slack notification
+      #   if: ${{ always() }}
+      #   run: |
+      #     echo "Success"
+      #     echo "Artifact URL is ${{ steps.artifact-upload-step.outputs.artifact-url }}"
+      #     echo "Status is: ${{ job.status }}"
+      #     echo "Steps are: ${{ toJson(steps) }}"
+
+      # - name: Send message to Slack channel
+      #   id: slack
+      #   uses: slackapi/slack-github-action@v1.24.0
+      #   env:
+      #     SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+      #     ARTIFACT_URL: ${{ steps.artifact-upload-step.outputs.artifact-url }}
+      #     PROJECT_NAME: "Feature Pipeline"
+      #   with:
+      #     channel-id: ${{ secrets.SLACK_RELEASE_CHANNEL_ID }}
+      #     payload: |
+      #       {
+      #         "blocks": [
+      #           {
+      #             "type": "header",
+      #             "text": {
+      #               "type": "plain_text",
+      #               "text": "New release: ${{ env.PROJECT_NAME }}"
+      #             }
+      #           },
+      #           {
+      #             "type": "divider"
+      #           },
+      #           {
+      #             "type": "section",
+      #             "text": {
+      #               "type": "mrkdwn",
+      #               "text": "*Release: <${{ env.ARTIFACT_URL }}|Released APK>*\n${{ env.DATE }}"
+      #             }
+      #           }
+      #         ]
+      #       }
+
+      # - name: Send message to Slack channel if job fails
+      #   if: ${{ failure() }}
+      #   id: slack-fail
+      #   uses: slackapi/slack-github-action@v1.24.0
+      #   env:
+      #     SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+      #     PROJECT_NAME: "Feature Pipeline"
+      #   with:
+      #     channel-id: ${{ secrets.SLACK_RELEASE_CHANNEL_ID }}
+      #     payload: |
+      #       {
+      #         "blocks": [
+      #           {
+      #             "type": "header",
+      #             "text": {
+      #               "type": "plain_text",
+      #               "text": "Failed: ${{ env.PROJECT_NAME }}"
+      #             }
+      #           },
+      #           {
+      #             "type": "divider"
+      #           },
+      #           {
+      #             "type": "section",
+      #             "text": {
+      #               "type": "plain_text",
+      #               "text": "The feature pipeline failed. Please check the logs."
+      #             }
+      #           }
+      #         ]
+      #       }
