@@ -13,7 +13,7 @@ jobs:
         with:
           workflow_id: ${{ github.event.workflow.id }}
 
-  pipeline:
+  lint-test-build:
     name: Check Lint, Unit Test and Build
     runs-on: macos-latest
     if: (startsWith(github.head_ref, 'documentation/') || startsWith(github.head_ref, 'tests/') || startsWith(github.head_ref, 'infra/')) == false # Skip documentation, tests and infra branches

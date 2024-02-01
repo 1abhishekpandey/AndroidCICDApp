@@ -5,7 +5,7 @@ on:
     branches: ["zzz"] # change this to 'main'
 
 jobs:
-  pipeline:
+  upload:
     name: Upload to Browserstack
     runs-on: macos-latest
 
