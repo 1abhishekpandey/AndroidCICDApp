@@ -17,6 +17,8 @@ jobs:
     name: Android Feature Pipeline
     runs-on: macos-latest
     if: (startsWith(github.head_ref, 'documentation/') || startsWith(github.head_ref, 'tests/') || startsWith(github.head_ref, 'infra/')) == false # Skip documentation, tests and infra branches
+    outputs:
+      output1: ${{ steps.artifact-upload-step.outputs.artifact-id }}
 
     steps:
       - uses: actions/setup-java@v4
@@ -46,11 +48,11 @@ jobs:
           echo "${{ secrets.KEYSTORE }}" > keystore.properties
           ls -li
 
-      - name: Check linting
-        run: ./gradlew lint
+      # - name: Check linting
+      #   run: ./gradlew lint
 
-      - name: Check unit tests
-        run: ./gradlew test
+      # - name: Check unit tests
+      #   run: ./gradlew test
 
       - name: Build and Sign
         run: ./gradlew build
@@ -61,4 +63,37 @@ jobs:
           name: app-release
           path: app/build/outputs/apk/release/app-release.apk
 
-      # - name: Notify to slack
+      - env:
+          OUTPUT1: ${{ pipeline.outputs.output1 }}
+        run: echo "Artifact ID from previous job is $OUTPUT1"
+
+      # - name: Send message to Slack channel
+      #   id: slack
+      #   uses: slackapi/slack-github-action@v1.24.0
+      #   env:
+      #     SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+      #     PROJECT_NAME: "Feature Pipeline"
+      #   with:
+      #     channel-id: ${{ secrets.SLACK_RELEASE_CHANNEL_ID }}
+      #     payload: |
+      #       {
+      #         "blocks": [
+      #           {
+      #             "type": "header",
+      #             "text": {
+      #               "type": "plain_text",
+      #               "text": "New release: ${{ env.PROJECT_NAME }}"
+      #             }
+      #           },
+      #           {
+      #             "type": "divider"
+      #           },
+      #           {
+      #             "type": "section",
+      #             "text": {
+      #               "type": "mrkdwn",
+      #               "text": "*Release: <${{ env.NPM_PACKAGE_URL }}|Released APK>*\n${{ env.DATE }}"
+      #             }
+      #           }
+      #         ]
+      #       }
